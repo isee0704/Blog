@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shyoc.dao.BlogDao">
+    <resultMap id="blogMap" type="blog">
+        <id property="id" column="id"></id>
+        <result property="title" column="title"></result>
+        <result property="content" column="content"></result>
+        <result property="description" column="description"></result>
+        <result property="masthead" column="masthead"></result>
+        <result property="flag" column="flag"></result>
+        <result property="firstPicture" column="first_picture"></result>
+        <result property="top" column="is_top"></result>
+        <result property="appreciation" column="appreciation"></result>
+        <result property="shareStatement" column="share_statement"></result>
+        <result property="commentabled" column="commentabled"></result>
+        <result property="published" column="published"></result>
+        <result property="recommend" column="recommend"></result>
+        <result property="createTime" column="create_time"></result>
+        <result property="updateTime" column="update_time"></result>
+        <association property="type" column="type_id" javaType="type"
+                     select="com.shyoc.dao.TypeDao.findTypeById">
+        </association>
+        <association property="user" column="user_id" javaType="user"
+                     select="com.shyoc.dao.UserDao.findUserById"></association>
+        <collection property="tagList" column="id"
+                    select="com.shyoc.dao.TagDao.findTagListByBlogId"></collection>
+    </resultMap>
+
+    <select id="findBlogById" parameterType="Long" resultMap="blogMap">
+        select
+        blog.id,
+        blog.appreciation,
+        blog.commentabled,
+        blog.content,
+        blog.description,
+        blog.first_picture,
+        blog.flag,
+        blog.is_top,
+        blog.update_time,
+        blog.create_time,
+        blog.published,
+        blog.recommend,
+        blog.share_statement,
+        blog.title,
+        blog.type_id,
+        blog.user_id
+        from
+        blog
+        where blog.id = #{id}
+    </select>
+
+    <select id="findBlogList" resultMap="blogMap" parameterType="blogManageQueryVo">
+        select
+        blog.id, blog.title, blog.recommend, blog.published, blog.is_top, blog.update_time, blog.type_id
+        from blog
+        <where>
+            <if test="title != null">
+                <bind name="title_pattern" value="'%' + title + '%'"></bind>
+                and title like #{title_pattern}
+            </if>
+            <if test="typeId != null">and type_id = #{typeId}</if>
+            <if test="recommend != null">and recommend = #{recommend}</if>
+        </where>
+    </select>
+
+    <select id="findHomeBlogList" resultMap="blogMap">
+        SELECT
+        blog.id, blog.title, blog.update_time, blog.create_time,
+        blog.description, blog.first_picture,
+        blog.user_id, blog.type_id, blog.is_top
+        FROM
+        blog
+        WHERE blog.published = TRUE
+    </select>
+
+    <select id="findTopBlogList" resultMap="blogMap">
+        SELECT
+        blog.id, blog.title, blog.update_time, blog.create_time,
+        blog.description, blog.first_picture, blog.is_top,
+        blog.user_id, blog.type_id
+        FROM
+        blog
+        WHERE blog.published = TRUE and blog.is_top = TRUE
+        order by create_time desc
+    </select>
+
+    <select id="findArchivesBlogList" resultType="blog">
+        select
+        id,
+        title,
+        flag,
+        create_time
+        from
+        blog
+        WHERE blog.published = TRUE
+        order by
+        create_time desc
+    </select>
+
+    <insert id="saveBlog" parameterType="blog" useGeneratedKeys="true" keyProperty="id">
+        insert into blog
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="appreciation != null">appreciation,</if>
+            <if test="commentabled != null">commentabled,</if>
+            <if test="content != null">content,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="description != null">description,</if>
+            <if test="firstPicture != null">first_picture,</if>
+            <if test="flag != null">flag,</if>
+            <if test="published != null">published,</if>
+            <if test="recommend != null">recommend,</if>
+            <if test="shareStatement != null">share_statement,</if>
+            <if test="top != null">is_top,</if>
+            <if test="title != null">title,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="type != null">type_id,</if>
+            <if test="user != null">user_id,</if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="appreciation != null">#{appreciation, jdbcType=BIT},</if>
+            <if test="commentabled != null">#{commentabled, jdbcType=BIT},</if>
+            <if test="content != null">#{content, jdbcType=LONGVARCHAR},</if>
+            <if test="createTime != null">#{createTime, jdbcType=BIGINT},</if>
+            <if test="description != null">#{description, jdbcType=VARCHAR},</if>
+            <if test="firstPicture != null">#{firstPicture, jdbcType=VARCHAR},</if>
+            <if test="flag != null">#{flag, jdbcType=VARCHAR},</if>
+            <if test="published != null">#{published, jdbcType=BIT},</if>
+            <if test="recommend != null">#{recommend, jdbcType=BIT},</if>
+            <if test="shareStatement != null">#{shareStatement, jdbcType=BIT},</if>
+            <if test="top != null">#{top, jdbcType=BIT},</if>
+            <if test="title != null">#{title, jdbcType=VARCHAR},</if>
+            <if test="updateTime != null">#{updateTime, jdbcType=BIGINT},</if>
+            <if test="type != null">#{type.id, jdbcType=BIGINT},</if>
+            <if test="user != null">#{user.id, jdbcType=BIGINT},</if>
+        </trim>
+    </insert>
+
+    <update id="updateBlog" parameterType="Blog">
+        update blog
+        <trim prefix="set" suffixOverrides=",">
+            <if test="appreciation!=null">appreciation=#{appreciation},</if>
+            <if test="commentabled!=null">commentabled=#{commentabled},</if>
+            <if test="content!=null">content=#{content},</if>
+            <if test="description!=null">description=#{description},</if>
+            <if test="firstPicture!=null">first_picture=#{firstPicture},</if>
+            <if test="flag!=null">flag=#{flag},</if>
+            <if test="published!=null">published=#{published},</if>
+            <if test="recommend!=null">recommend=#{recommend},</if>
+            <if test="shareStatement!=null">share_statement=#{shareStatement},</if>
+            <if test="top!=null">is_top=#{top},</if>
+            <if test="title!=null">title=#{title},</if>
+            <if test="updateTime!=null">update_time=#{updateTime},</if>
+            <if test="type!=null">type_id=#{type.id},</if>
+        </trim>
+        where id=#{id}
+    </update>
+
+    <delete id="deleteBlog" parameterType="Long">
+        delete from blog where id = #{id}
+    </delete>
+
+    <insert id="saveBlogTag" parameterType="blog">
+        insert into blog_tag(blog_id, tag_id)
+        values
+        <foreach collection="tagList" item="tag" separator="," index="index">
+            (
+            #{id},
+            #{tag.id}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteBlogTag" parameterType="blog">
+        delete from blog_tag where blog_id = #{id}
+    </delete>
+
+    <select id="findBlogByTypeId" resultMap="blogMap">
+        select
+        blog.id, blog.title, blog.update_time, blog.create_time,
+        blog.description, blog.first_picture,
+        blog.user_id, blog.type_id
+        from blog
+        <where>
+            <if test="typeId != 0">and type_id = #{typeId}</if>
+            and blog.published = TRUE
+        </where>
+    </select>
+
+    <select id="findCountByTypeId" resultType="Integer">
+        select count(*)
+        from blog
+        where
+        type_id = #{typeId} and blog.published = true
+    </select>
+
+    <select id="findTopRecommendBlogList" resultType="blog">
+        select id, title
+        from
+        blog
+        where
+        recommend = true and published = true
+        order by update_time desc
+        limit #{top}
+    </select>
+
+    <select id="findSearchBlog" resultMap="blogMap">
+        SELECT
+        blog.id, blog.title, blog.update_time, blog.create_time,
+        blog.description, blog.first_picture,
+        blog.user_id, blog.type_id
+        FROM
+        blog
+        <where>
+            <if test="search != null and search != ''">
+                <bind name="search_pattern" value="'*' + search + '*'"></bind>
+                and match(blog.title, blog.content, blog.description) against(#{search_pattern} in boolean mode)
+            </if>
+            and blog.published = true
+        </where>
+    </select>
+
+    <select id="findBlogByTagId" resultMap="blogMap">
+        SELECT
+        blog.id, blog.title, blog.update_time, blog.create_time,
+        blog.description, blog.first_picture,
+        blog.user_id, blog.type_id
+        FROM
+        blog
+        <if test="tagId != 0">
+            INNER JOIN
+            blog_tag
+            ON blog.id = blog_tag.blog_id
+            where blog_tag.tag_id = #{tagId} and blog.published = true
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shyoc.dao.MessageDao">
+    <resultMap id="messageMap" type="message">
+        <id property="id" column="id"></id>
+        <result property="adminMessage" column="admin_message"></result>
+        <result property="content" column="content"></result>
+        <result property="createTime" column="create_time"></result>
+        <result property="parentMsgId" column="parent_msg_id"></result>
+        <association property="user" column="user_id"
+                     select="com.shyoc.dao.UserDao.findUserById"></association>
+    </resultMap>
+
+    <select id="findMessageById" resultMap="messageMap">
+        select * from message where id=#{messageId};
+    </select>
+
+    <select id="findMessageList" resultMap="messageMap">
+        select
+        id,
+        admin_message,
+        content,
+        create_time,
+        user_id,
+        parent_msg_id
+        from message
+        order by
+        create_time desc
+    </select>
+
+    <insert id="saveMessage" parameterType="message" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        message
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="adminMessage != null">admin_message,</if>
+            <if test="content != null">content,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="user != null">user_id,</if>
+            <if test="parentMsgId != null">parent_msg_id,</if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="adminMessage != null">#{adminMessage},</if>
+            <if test="content != null">#{content},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="user != null">#{user.id},</if>
+            <if test="parentMsgId != null">#{parentMsgId},</if>
+        </trim>
+    </insert>
+</mapper>

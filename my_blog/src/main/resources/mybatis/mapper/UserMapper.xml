@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shyoc.dao.UserDao">
+    <select id="findUser" resultType="User">
+        select
+        id,
+        avatar,
+        create_time,
+        email,
+        nickname,
+        type,
+        update_time,
+        username,
+        ip,
+        qq,
+        wechat
+        from user
+        where username = #{username} and password = #{password}
+    </select>
+
+    <select id="findUserByIp" resultType="User">
+        select
+        id,
+        avatar,
+        create_time,
+        email,
+        nickname,
+        type,
+        update_time,
+        ip
+        from user
+        where ip = #{ip}
+    </select>
+
+    <select id="findUserById" resultType="user">
+        select
+        id,
+        avatar,
+        email,
+        nickname,
+        type,
+        qq,
+        wechat
+        from user where id = #{id}
+    </select>
+
+    <select id="findAdmin" resultType="user">
+        select
+        id,
+        avatar,
+        email,
+        nickname,
+        type,
+        qq,
+        wechat
+        from user
+        where type = 1
+    </select>
+
+    <insert id="saveUser" parameterType="user" keyProperty="id" useGeneratedKeys="true">
+        insert into
+        user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="avatar != null">avatar,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="email != null">email,</if>
+            <if test="nickname != null">nickname,</if>
+            <if test="password != null">password,</if>
+            <if test="type != null">type,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="username != null">username,</if>
+            <if test="ip != null">ip,</if>
+            <if test="qq != null">qq,</if>
+            <if test="wechat != null">wechat,</if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="avatar != null">#{avatar},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="email != null">#{email},</if>
+            <if test="nickname != null">#{nickname},</if>
+            <if test="password != null">#{password},</if>
+            <if test="type != null">#{type},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="username != null">#{username},</if>
+            <if test="ip != null">#{ip},</if>
+            <if test="qq != null">#{qq},</if>
+            <if test="wechat != null">#{wechat},</if>
+        </trim>
+        on duplicate key update
+        <trim suffixOverrides=",">
+            <if test="email != null">email = #{email},</if>
+        </trim>
+    </insert>
+</mapper>

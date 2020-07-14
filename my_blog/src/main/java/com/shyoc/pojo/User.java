@@ -1,0 +1,49 @@
+package com.shyoc.pojo;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+import java.io.Serializable;
+import java.util.List;
+
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+@ApiModel("用户实体类")
+@JsonIgnoreProperties(value = {"handler"})
+public class User implements Serializable {
+    @ApiModelProperty("用户id")
+    private Long id;
+    @ApiModelProperty("用户名")
+    private String username;
+    @ApiModelProperty("用户密码")
+    private String password;
+    @ApiModelProperty("用户昵称")
+    private String nickname;
+    @ApiModelProperty("用户邮箱")
+    private String email;
+    @ApiModelProperty("用户头像的url")
+    private String avatar;
+    @ApiModelProperty("用户类型")
+    private Integer type;
+    @ApiModelProperty("用户信息的创建时间")
+    private Long createTime;
+    @ApiModelProperty("用户信息的更新时间")
+    private Long updateTime;
+    @ApiModelProperty("用户的ip地址")
+    private String ip;
+    @ApiModelProperty("用户QQ")
+    private String qq;
+    @ApiModelProperty("用户微信")
+    private String wechat;
+
+    @ApiModelProperty("用户所发布的博客")
+    private List<Blog> blogList;
+}

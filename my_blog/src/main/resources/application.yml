@@ -1,0 +1,65 @@
+spring:
+  profiles:
+    active: prod
+#    mail
+  mail:
+    host: smtp.qq.com
+    username: xxx
+    password: xxx
+    #    开启加密验证
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 30000
+          ssl.enable: true
+          socketFactory.class: javax.net.ssl.SSLSocketFactory
+          starttls.enable: true
+          socketFactory.port: 465
+          port: 465
+  #    thymeleaf
+  thymeleaf:
+    enabled: true
+    mode: HTML
+    encoding: UTF-8
+    content-type: text/html
+    prefix: classpath:/templates/ # 模板存放在资源目录的 templates/ 文件下
+    suffix: .html # 模板后缀
+    check-template-location: true
+    check-template: false
+    cache: true
+  #rabbitmq
+  rabbitmq:
+    addresses: xxx
+    port: 5672
+    username: guest
+    password: guest
+    #开启returnedMessage回调
+    publisher-returns: true
+    #开启confirms回调
+    publisher-confirm-type: correlated
+    #开启
+    listener:
+      simple:
+        acknowledge-mode: manual
+# Mybatis
+mybatis:
+  type-aliases-package: com.shyoc.pojo
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  configuration:
+    aggressive-lazy-loading: false
+    lazy-loading-enabled: true
+    map-underscore-to-camel-case: true
+pagehelper:
+  auto-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+
+# 普通用户头像
+comment:
+  avatar: http://cdn.shyoc.com/img/20200713220932.png
+
+# 邮件发送者
+mail:
+  fromMail:
+         addr: xxx
