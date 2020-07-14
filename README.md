@@ -10,5 +10,5 @@
 
 ## 2、架构
 
-![博客架构图](http://cdn.shyoc.com/img/20200714153115.png)
+![](http://cdn.shyoc.com/img/20200714153115.png)
 
